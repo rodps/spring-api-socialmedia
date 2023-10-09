@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "usuarios")
@@ -13,7 +15,7 @@ import java.util.Date;
 public class Usuario {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
     private String nome;
     private String sobrenome;
     private String email;
@@ -24,4 +26,6 @@ public class Usuario {
     private String pais;
     private String telefone;
     private boolean estaValidado;
+    @OneToMany(mappedBy = "autor")
+    private List<Post> posts = new ArrayList<>();
 }
