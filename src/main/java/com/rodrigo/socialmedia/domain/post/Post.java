@@ -1,7 +1,10 @@
-package com.rodrigo.socialmedia;
+package com.rodrigo.socialmedia.domain.post;
 
+import com.rodrigo.socialmedia.domain.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.Getter;
+
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "posts")
@@ -12,7 +15,7 @@ public class Post {
     private Long id;
     private String mediaUrl;
     private String texto;
-    private String dataDeCriacao;
+    private LocalDate dataDeCriacao;
     @ManyToOne(fetch = FetchType.LAZY)
     private Usuario autor;
 }
