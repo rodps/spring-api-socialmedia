@@ -1,14 +1,11 @@
 package com.rodrigo.socialmedia.domain.usuario.cadastrar;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 public record CadastrarUsuarioDTO(
-        @NotBlank @Max(32)
+        @NotBlank @Max(16) @Pattern(regexp = "[^\s]")
         String apelido,
         @NotBlank
         String nome,
@@ -16,7 +13,7 @@ public record CadastrarUsuarioDTO(
         String sobrenome,
         @NotBlank @Email
         String email,
-        @NotBlank
+        @NotBlank @Min(6)
         String senha,
         @NotNull
         LocalDate dataDeNascimento,
