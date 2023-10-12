@@ -1,7 +1,6 @@
 package com.rodrigo.socialmedia.domain.usuario.validacoes;
 
 import com.rodrigo.socialmedia.domain.ValidacaoException;
-import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuarioDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

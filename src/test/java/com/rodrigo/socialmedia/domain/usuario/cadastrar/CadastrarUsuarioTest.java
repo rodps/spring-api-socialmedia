@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rodrigo.socialmedia.domain.ValidacaoException;
 import com.rodrigo.socialmedia.domain.usuario.Usuario;
 import com.rodrigo.socialmedia.domain.usuario.UsuarioRepository;
-import com.rodrigo.socialmedia.domain.usuario.editar.EditarUsuarioDTO;
 import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarIdade;
 import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarSeApelidoJaExiste;
 import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarSeEmailJaExiste;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
@@ -39,14 +37,8 @@ class CadastrarUsuarioTest {
     @Mock
     private UsuarioRepository usuarioRepository;
 
-    @Mock
-    private JavaMailSender javaMailSender;
-
     @Captor
     private ArgumentCaptor<Usuario> usuarioCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> stringArgumentCaptor;
 
     @Mock
     private ValidarIdade validarIdade;

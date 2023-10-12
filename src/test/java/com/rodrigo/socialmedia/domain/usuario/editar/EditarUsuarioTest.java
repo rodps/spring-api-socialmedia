@@ -29,9 +29,6 @@ class EditarUsuarioTest {
     @Mock
     private UsuarioRepository usuarioRepository;
 
-    @Captor
-    ArgumentCaptor<Long> idCaptor;
-
     @Mock
     private ValidarIdade validarIdade;
 
