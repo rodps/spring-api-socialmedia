@@ -3,7 +3,6 @@ package com.rodrigo.socialmedia.controller;
 import com.rodrigo.socialmedia.domain.usuario.Usuario;
 import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuario;
 import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuarioDTO;
-import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +21,8 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody @Valid CadastrarUsuarioDTO dto, UriComponentsBuilder uriBuilder) {
-        try {
-            Usuario usuario = cadastrarUsuario.execute(dto);
-            var uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
-            return ResponseEntity.created(uri).build();
-        } catch (Exception ex) {
-            return ResponseEntity.internalServerError().build();
-        }
+        Usuario usuario = cadastrarUsuario.execute(dto);
+        var uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 }

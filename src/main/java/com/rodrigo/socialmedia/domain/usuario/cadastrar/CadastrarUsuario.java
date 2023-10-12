@@ -7,16 +7,13 @@ import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarSeApelidoJaExist
 import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarSeEmailJaExiste;
 import com.rodrigo.socialmedia.infra.EmailService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class CadastrarUsuario {
 
     @Autowired
@@ -37,7 +34,7 @@ public class CadastrarUsuario {
     @Autowired
     private EmailService emailService;
 
-    public Usuario execute(CadastrarUsuarioDTO dto) throws MessagingException {
+    public Usuario execute(CadastrarUsuarioDTO dto) {
         validarIdade.validar(dto.dataDeNascimento());
         validarSeApelidoJaExiste.validar(dto.apelido());
         validarSeEmailJaExiste.validar(dto.email());
@@ -46,7 +43,11 @@ public class CadastrarUsuario {
         Usuario usuario = new Usuario(dto, hashedPassword);
         usuarioRepository.save(usuario);
 
-        emailService.enviarEmailDeConfirmacaoDeCadastro(dto.email());
+        try {
+            emailService.enviarEmailDeConfirmacaoDeCadastro(dto.email());
+        } catch (MessagingException e) {
+            log.error("Ocorreu um erro ao enviar email: %s".formatted(e.getMessage()));
+        }
         return usuario;
     }
 }

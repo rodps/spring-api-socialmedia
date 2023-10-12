@@ -20,6 +20,9 @@ public class EmailService {
     @Value("emailfrom")
     private String from;
 
+    @Autowired
+    private UrlHelper urlHelper;
+
     public void enviarEmailSimples(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom(from);
@@ -33,7 +36,7 @@ public class EmailService {
     public void enviarEmailDeConfirmacaoDeCadastro(String to) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-        String urlDeConfirmacao = UrlHelper.getUrlDeConfirmacaoDeCadastro("random");
+        String urlDeConfirmacao = urlHelper.getUrlDeConfirmacaoDeCadastro("random");
         String htmlMessage = """
                 <h3>Confirmação de cadastro</h3>
                 <p>Seja bem vindo ao projeto socialmedia! Para confirmar o seu cadastro, acesse o link abaixo:</p>
