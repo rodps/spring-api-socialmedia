@@ -1,20 +1,27 @@
 package com.rodrigo.socialmedia.domain.usuario.cadastrar;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.rodrigo.socialmedia.domain.ValidacaoException;
 import com.rodrigo.socialmedia.domain.usuario.Usuario;
 import com.rodrigo.socialmedia.domain.usuario.UsuarioRepository;
-import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuario;
-import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuarioValidator;
+import com.rodrigo.socialmedia.domain.usuario.editar.EditarUsuarioDTO;
+import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarIdade;
+import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarSeApelidoJaExiste;
+import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarSeEmailJaExiste;
+import com.rodrigo.socialmedia.infra.EmailService;
+import jakarta.mail.MessagingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
@@ -32,56 +39,83 @@ class CadastrarUsuarioTest {
     @Mock
     private UsuarioRepository usuarioRepository;
 
-    @Spy
-    private List<CadastrarUsuarioValidator> validatorList = new ArrayList<>();
-
     @Mock
-    private CadastrarUsuarioValidator validator1;
-    @Mock
-    private CadastrarUsuarioValidator validator2;
-    @Mock
-    private CadastrarUsuarioValidator validator3;
-
-    private CadastrarUsuarioDTO dto = new CadastrarUsuarioDTO(
-            "apelido",
-            "nome",
-            "sobrenome",
-            "email",
-            "senha",
-            LocalDate.now().minusDays(1),
-            "cidade",
-            "estado",
-            "pais",
-            "telefone"
-    );;
+    private JavaMailSender javaMailSender;
 
     @Captor
     private ArgumentCaptor<Usuario> usuarioCaptor;
 
-    @Test
-    @DisplayName("Deveria executar todas as validações")
-    public void deveriaExecutarTodasAsValidacoes() {
-        //arrange
-        validatorList.add(validator1);
-        validatorList.add(validator2);
-        validatorList.add(validator3);
+    @Captor
+    private ArgumentCaptor<String> stringArgumentCaptor;
 
-        //act
-        cadastrarUsuario.execute(dto);
+    @Mock
+    private ValidarIdade validarIdade;
+
+    @Mock
+    private ValidarSeApelidoJaExiste validarSeApelidoJaExiste;
+
+    @Mock
+    private ValidarSeEmailJaExiste validarSeEmailJaExiste;
+
+    @Mock
+    private EmailService emailService;
+
+    private ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    @Test
+    public void deveriaLancarExcecaoSeOUsuarioForMenorDoQue18Anos() throws JsonProcessingException {
+        //arrange
+        String json = """
+                { "dataDeNascimento": "11/11/1999" }
+            """;
+        CadastrarUsuarioDTO dto = objectMapper.readValue(json, CadastrarUsuarioDTO.class);
+        doThrow(ValidacaoException.class).when(validarIdade).validar(dto.dataDeNascimento());
 
         //assert
-        InOrder inorder = inOrder(validatorList, usuarioRepository);
-        inorder.verify(validatorList).forEach(any());
-        inorder.verify(usuarioRepository).save(any());
-        then(validator1).should().validar(dto);
-        then(validator2).should().validar(dto);
-        then(validator3).should().validar(dto);
+        Assertions.assertThrows(ValidacaoException.class, () -> cadastrarUsuario.execute(dto));
     }
 
     @Test
-    @DisplayName("Deveria salvar o usuário com os parâmetros corretos")
-    public void deveriaSalvarOUsuarioComOsParametrosCorretos() {
+    public void deveriaLancarExcecaoSeOApelidoJaExiste() throws JsonProcessingException {
         //arrange
+        String json = """
+                { "apelido": "apelidoExistente" }
+            """;
+        CadastrarUsuarioDTO dto = objectMapper.readValue(json, CadastrarUsuarioDTO.class);
+        doThrow(ValidacaoException.class).when(validarSeApelidoJaExiste).validar(dto.apelido());
+
+        //assert
+        Assertions.assertThrows(ValidacaoException.class, () -> cadastrarUsuario.execute(dto));
+    }
+
+    @Test
+    public void deveriaLancarExcecaoSeOEmailJaExiste() throws JsonProcessingException {
+        //arrange
+        String json = """
+                { "email": "emailExistente" }
+            """;
+        CadastrarUsuarioDTO dto = objectMapper.readValue(json, CadastrarUsuarioDTO.class);
+        doThrow(ValidacaoException.class).when(validarSeEmailJaExiste).validar(any());
+
+        //assert
+        Assertions.assertThrows(ValidacaoException.class, () -> cadastrarUsuario.execute(dto));
+    }
+
+    @Test
+    public void deveriaSalvarOUsuarioComOsParametrosCorretos() throws MessagingException {
+        //arrange
+        CadastrarUsuarioDTO dto = new CadastrarUsuarioDTO(
+                "apelido",
+                "nome",
+                "sobrenome",
+                "email",
+                "senha",
+                LocalDate.now().minusDays(1),
+                "cidade",
+                "estado",
+                "pais",
+                "telefone"
+        );
         String hashedPassword = "anyHashedPassword";
         given(passwordEncoder.encode(dto.senha())).willReturn(hashedPassword);
 
@@ -101,4 +135,28 @@ class CadastrarUsuarioTest {
         Assertions.assertEquals(usuarioCaptor.getValue().getTelefone(), dto.telefone());
         Assertions.assertEquals(usuarioCaptor.getValue().getDataDeNascimento(), dto.dataDeNascimento());
     }
+
+    @Test
+    public void deveriaEnviarEmailDeConfirmacao() throws MessagingException {
+        //arrange
+        CadastrarUsuarioDTO dto = new CadastrarUsuarioDTO(
+                "apelido",
+                "nome",
+                "sobrenome",
+                "email",
+                "senha",
+                LocalDate.now(),
+                "cidade",
+                "estado",
+                "pais",
+                "telefone"
+        );
+
+        //act
+        cadastrarUsuario.execute(dto);
+
+        //assert
+        then(emailService).should().enviarEmailDeConfirmacaoDeCadastro(dto.email());
+    }
+
 }

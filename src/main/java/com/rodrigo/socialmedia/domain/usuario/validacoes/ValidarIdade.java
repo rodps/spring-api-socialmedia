@@ -1,4 +1,4 @@
-package com.rodrigo.socialmedia.domain.usuario.cadastrar;
+package com.rodrigo.socialmedia.domain.usuario.validacoes;
 
 import com.rodrigo.socialmedia.domain.ValidacaoException;
 import org.springframework.stereotype.Component;
@@ -7,10 +7,9 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 @Component
-public class ValidarIdadeAoCadastrarUsuario implements CadastrarUsuarioValidator {
+public class ValidarIdade {
 
-    public void validar(CadastrarUsuarioDTO dto) {
-        LocalDate dataDeNascimento = dto.dataDeNascimento();
+    public void validar(LocalDate dataDeNascimento) {
         LocalDate dataAtual = LocalDate.now();
         Long idade = ChronoUnit.YEARS.between(dataDeNascimento, dataAtual);
         if (idade < 18) {
