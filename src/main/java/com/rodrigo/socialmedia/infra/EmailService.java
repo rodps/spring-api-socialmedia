@@ -1,6 +1,7 @@
 package com.rodrigo.socialmedia.infra;
 
 import com.rodrigo.socialmedia.domain.UrlHelper;
+import com.rodrigo.socialmedia.domain.usuario.Usuario;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,11 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("emailfrom")
+    @Value("${email.from:teste@socialmedia.com}")
     private String from;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Autowired
     private UrlHelper urlHelper;
@@ -33,17 +37,18 @@ public class EmailService {
     }
 
     @Async
-    public void enviarEmailDeConfirmacaoDeCadastro(String to) throws MessagingException {
+    public void enviarEmailDeConfirmacaoDeCadastro(Usuario usuario) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-        String urlDeConfirmacao = urlHelper.getUrlDeConfirmacaoDeCadastro("random");
+        String token = jwtService.encode(usuario, 1);
+        String urlDeConfirmacao = urlHelper.urlDeConfirmacaoDeCadastro(token);
         String htmlMessage = """
                 <h3>Confirmação de cadastro</h3>
                 <p>Seja bem vindo ao projeto socialmedia! Para confirmar o seu cadastro, acesse o link abaixo:</p>
                 <p>%s</p>
                 """.formatted(urlDeConfirmacao);
         helper.setText(htmlMessage, true);
-        helper.setTo(to);
+        helper.setTo(usuario.getEmail());
         helper.setFrom(from);
         helper.setSubject("Confirme seu email");
         mailSender.send(message);

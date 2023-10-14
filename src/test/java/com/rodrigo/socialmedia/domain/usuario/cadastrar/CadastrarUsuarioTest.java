@@ -148,7 +148,8 @@ class CadastrarUsuarioTest {
         cadastrarUsuario.execute(dto);
 
         //assert
-        then(emailService).should().enviarEmailDeConfirmacaoDeCadastro(dto.email());
+        verify(usuarioRepository).save(usuarioCaptor.capture());
+        verify(emailService).enviarEmailDeConfirmacaoDeCadastro(usuarioCaptor.getValue());
     }
 
 }

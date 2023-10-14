@@ -44,7 +44,7 @@ public class CadastrarUsuario {
         usuarioRepository.save(usuario);
 
         try {
-            emailService.enviarEmailDeConfirmacaoDeCadastro(dto.email());
+            emailService.enviarEmailDeConfirmacaoDeCadastro(usuario);
         } catch (MessagingException e) {
             log.error("Ocorreu um erro ao enviar email: %s".formatted(e.getMessage()));
         }
