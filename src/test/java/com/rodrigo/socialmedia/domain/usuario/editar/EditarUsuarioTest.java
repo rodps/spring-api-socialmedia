@@ -3,7 +3,7 @@ package com.rodrigo.socialmedia.domain.usuario.editar;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.rodrigo.socialmedia.domain.ValidacaoException;
+import com.rodrigo.socialmedia.domain.errors.ValidacaoException;
 import com.rodrigo.socialmedia.domain.usuario.Usuario;
 import com.rodrigo.socialmedia.domain.usuario.UsuarioRepository;
 import com.rodrigo.socialmedia.domain.usuario.validacoes.ValidarIdade;

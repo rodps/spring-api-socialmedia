@@ -1,6 +1,6 @@
 package com.rodrigo.socialmedia.domain.usuario.validacoes;
 
-import com.rodrigo.socialmedia.domain.ValidacaoException;
+import com.rodrigo.socialmedia.domain.errors.ValidacaoException;
 import com.rodrigo.socialmedia.domain.usuario.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

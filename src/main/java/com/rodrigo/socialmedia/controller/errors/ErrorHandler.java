@@ -1,6 +1,6 @@
-package com.rodrigo.socialmedia.controller;
+package com.rodrigo.socialmedia.controller.errors;
 
-import com.rodrigo.socialmedia.domain.ValidacaoException;
+import com.rodrigo.socialmedia.domain.errors.ValidacaoException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
