@@ -3,7 +3,6 @@ package com.rodrigo.socialmedia.controller;
 import com.rodrigo.socialmedia.domain.usuario.Usuario;
 import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuario;
 import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuarioDTO;
-import com.rodrigo.socialmedia.domain.usuario.confirmarCadastro.ConfirmarCadastro;
 import com.rodrigo.socialmedia.domain.usuario.editar.EditarUsuario;
 import com.rodrigo.socialmedia.domain.usuario.editar.EditarUsuarioDTO;
 import jakarta.validation.Valid;
@@ -22,8 +21,6 @@ public class UsuarioController {
     @Autowired
     private EditarUsuario editarUsuario;
 
-    @Autowired
-    private ConfirmarCadastro confirmarCadastro;
 
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody @Valid CadastrarUsuarioDTO dto, UriComponentsBuilder uriBuilder) {
@@ -38,9 +35,4 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/confirmarCadastro/{token}")
-    public ResponseEntity confimarCadastro(@RequestParam("token") String token) {
-        confirmarCadastro.execute(token);
-        return ResponseEntity.ok().build();
-    }
 }

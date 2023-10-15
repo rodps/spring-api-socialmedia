@@ -9,6 +9,5 @@ create table usuarios (
     cidade varchar(100) not null,
     estado varchar(100) not null,
     pais varchar(100) not null,
-    telefone varchar(20),
-    esta_validado boolean
+    telefone varchar(20)
 );

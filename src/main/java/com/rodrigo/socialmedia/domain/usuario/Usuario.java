@@ -32,14 +32,12 @@ public class Usuario {
     private String estado;
     private String pais;
     private String telefone;
-    private boolean estaValidado;
     @OneToMany(mappedBy = "autor")
     private List<Post> posts = new ArrayList<>();
 
     public Usuario(CadastrarUsuarioDTO dto, String hashedPassword) {
         BeanUtils.copyProperties(dto, this);
         this.senha = hashedPassword;
-        this.estaValidado = false;
     }
 
     public void atualizarDados(EditarUsuarioDTO dto) {

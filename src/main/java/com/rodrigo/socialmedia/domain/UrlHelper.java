@@ -11,7 +11,7 @@ public class UrlHelper {
     @Value("${baseurl:http://localhost:8080/}")
     private String baseurl;
 
-    public String urlDeConfirmacaoDeCadastro(String token) {
-        return baseurl.concat("confirmarEmail/").concat(token);
+    public String urlLogin() {
+        return baseurl.concat("login");
     }
 }

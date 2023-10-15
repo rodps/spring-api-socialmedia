@@ -22,9 +22,6 @@ public class EmailService {
     private String from;
 
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
     private UrlHelper urlHelper;
 
     public void enviarEmailSimples(String to, String subject, String text) {
@@ -40,13 +37,12 @@ public class EmailService {
     public void enviarEmailDeConfirmacaoDeCadastro(Usuario usuario) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, "utf-8");
-        String token = jwtService.encode(usuario, 1);
-        String urlDeConfirmacao = urlHelper.urlDeConfirmacaoDeCadastro(token);
+        String urlDeLogin = urlHelper.urlLogin();
         String htmlMessage = """
                 <h3>Confirmação de cadastro</h3>
-                <p>Seja bem vindo ao projeto socialmedia! Para confirmar o seu cadastro, acesse o link abaixo:</p>
+                <p>Seja bem vindo ao projeto socialmedia! Para realizar o login, acesse o link abaixo:</p>
                 <p>%s</p>
-                """.formatted(urlDeConfirmacao);
+                """.formatted(urlDeLogin);
         helper.setText(htmlMessage, true);
         helper.setTo(usuario.getEmail());
         helper.setFrom(from);
