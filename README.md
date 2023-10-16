@@ -4,6 +4,7 @@ Funcionalidades:
 - POST /usuarios - Cadastro
 - PATCH /usuarios/{id} - Editar usuario
 - PATCH /usuarios/{id}/mudarSenha - Mudar senha
+- POST /login - Login
 
 Tecnologias:
 - Spring Boot
