@@ -34,15 +34,14 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity editar(@RequestParam("id") Long id, @RequestBody @Valid EditarUsuarioDTO dto) {
+    public ResponseEntity editar(@PathVariable("id") Long id, @RequestBody @Valid EditarUsuarioDTO dto) {
         editarUsuario.execute(id, dto);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity mudarSenha(@RequestParam("id") Long id, @RequestBody @Valid MudarSenhaDTO dto) {
+    @PatchMapping("/{id}/mudarSenha")
+    public ResponseEntity mudarSenha(@PathVariable("id") Long id, @RequestBody @Valid MudarSenhaDTO dto) {
         mudarSenha.execute(id, dto);
         return ResponseEntity.ok().build();
     }
-
 }
