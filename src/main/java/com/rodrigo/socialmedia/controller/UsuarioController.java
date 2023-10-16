@@ -1,6 +1,8 @@
 package com.rodrigo.socialmedia.controller;
 
 import com.rodrigo.socialmedia.domain.usuario.Usuario;
+import com.rodrigo.socialmedia.domain.usuario.autenticacao.AutenticarUsuario;
+import com.rodrigo.socialmedia.domain.usuario.autenticacao.AutenticarUsuarioDTO;
 import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuario;
 import com.rodrigo.socialmedia.domain.usuario.cadastrar.CadastrarUsuarioDTO;
 import com.rodrigo.socialmedia.domain.usuario.editar.EditarUsuario;
@@ -25,6 +27,9 @@ public class UsuarioController {
 
     @Autowired
     private MudarSenha mudarSenha;
+
+    @Autowired
+    private AutenticarUsuario autenticarUsuario;
 
     @PostMapping
     public ResponseEntity cadastrar(@RequestBody @Valid CadastrarUsuarioDTO dto, UriComponentsBuilder uriBuilder) {
