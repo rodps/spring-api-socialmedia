@@ -11,6 +11,7 @@ Tecnologias:
 - Spring Email
 - Autenticação JWT
 - Spring Security
+- SpringDoc Swagger
 
 Boas praticas:
 - Testes automatizados
