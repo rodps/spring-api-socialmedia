@@ -12,6 +12,7 @@ Tecnologias:
 - Autenticação JWT
 - Spring Security
 - SpringDoc Swagger
+- Flyway migrations
 
 Boas praticas:
 - Testes automatizados
