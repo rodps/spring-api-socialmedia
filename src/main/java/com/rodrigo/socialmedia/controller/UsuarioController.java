@@ -9,6 +9,7 @@ import com.rodrigo.socialmedia.domain.usuario.editar.EditarUsuario;
 import com.rodrigo.socialmedia.domain.usuario.editar.EditarUsuarioDTO;
 import com.rodrigo.socialmedia.domain.usuario.mudarSenha.MudarSenha;
 import com.rodrigo.socialmedia.domain.usuario.mudarSenha.MudarSenhaDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +39,14 @@ public class UsuarioController {
         return ResponseEntity.created(uri).build();
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @PatchMapping("/{id}")
     public ResponseEntity editar(@PathVariable("id") Long id, @RequestBody @Valid EditarUsuarioDTO dto) {
         editarUsuario.execute(id, dto);
         return ResponseEntity.ok().build();
     }
 
+    @SecurityRequirement(name = "bearer-key")
     @PatchMapping("/{id}/mudarSenha")
     public ResponseEntity mudarSenha(@PathVariable("id") Long id, @RequestBody @Valid MudarSenhaDTO dto) {
         mudarSenha.execute(id, dto);
